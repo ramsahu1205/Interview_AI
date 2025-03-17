@@ -4,8 +4,10 @@ import os
 import requests
 import logging
 from werkzeug.exceptions import HTTPException
+from dotenv import load_dotenv
 
 # Load environment variables
+load_dotenv()
 
 app = Flask(__name__)
 
@@ -17,7 +19,7 @@ logger = logging.getLogger(__name__)
 QUESTIONS_FILE = 'questions.json'
 
 # Groq API key
-GROQ_API_KEY = "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"
+GROQ_API_KEY = os.getenv('GROQ_API_KEY')
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 # Load questions from JSON file
