@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend Skills Interview</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --primary-dark: #3a0ca3;
+            --secondary: #f72585;
+            --success: #10b981;
+            --warning: #fbbf24;
+            --danger: #ef4444;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --radius: 8px;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', sans-serif;
+            line-height: 1.6;
+            color: var(--gray-800);
+            background-color: #f8fafc;
+            background-image: radial-gradient(var(--gray-200) 1px, transparent 0);
+            background-size: 32px 32px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 850px;
+            background-color: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 24px 32px;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header h1 i {
+            font-size: 1.5rem;
+        }
+
+        .header p {
+            margin-top: 8px;
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .main-content {
+            padding: 32px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: var(--gray-200);
+            border-radius: 4px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .progress-bar-inner {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-light), var(--primary));
+            border-radius: 4px;
+            transition: width 0.4s ease;
+            width: 0%;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 32px;
+            font-size: 0.875rem;
+            color: var(--gray-700);
+        }
+
+        .question-container {
+            margin-bottom: 24px;
+        }
+
+        .question {
+            background-color: var(--gray-100);
+            padding: 20px;
+            border-radius: var(--radius);
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary);
+            color: var(--gray-800);
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 160px;
+            padding: 16px;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius);
+            resize: vertical;
+            font-family: inherit;
+            font-size: 1rem;
+            line-height: 1.6;
+            transition: var(--transition);
+            background-color: white;
+            margin-bottom: 24px;
+            color: var(--gray-800);
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+        }
+
+        textarea::placeholder {
+            color: var(--gray-400);
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        button:disabled {
+            background-color: var(--gray-400);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .loading {
+            text-align: center;
+            margin: 40px 0;
+            display: none;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(67, 97, 238, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading p {
+            margin-top: 16px;
+            color: var(--gray-700);
+            font-size: 0.95rem;
+        }
+
+        .error {
+            background-color: #fee2e2;
+            border-left: 4px solid var(--danger);
+            color: #b91c1c;
+            padding: 12px 16px;
+            border-radius: var(--radius);
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+            display: none;
+        }
+
+        .result-container {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .result-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .result-header h2 {
+            color: var(--gray-900);
+            margin-bottom: 16px;
+            font-size: 1.8rem;
+        }
+
+        .score-card {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            color: white;
+            text-align: center;
+            padding: 24px;
+            border-radius: var(--radius);
+            margin-bottom: 32px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .score-value {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+
+        .score-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .feedback-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .feedback-item {
+            background-color: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+            overflow: hidden;
+        }
+
+        .feedback-header {
+            padding: 16px;
+            background-color: var(--gray-100);
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .feedback-title {
+            font-weight: 600;
+            color: var(--gray-800);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feedback-score {
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background-color: white;
+        }
+
+        .score-high {
+            color: #059669;
+            background-color: #d1fae5;
+        }
+
+        .score-medium {
+            color: #9a3412;
+            background-color: #ffedd5;
+        }
+
+        .score-low {
+            color: #b91c1c;
+            background-color: #fee2e2;
+        }
+
+        .feedback-content {
+            padding: 16px;
+        }
+
+        .feedback-question {
+            font-weight: 500;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .feedback-answer {
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .feedback-text {
+            color: var(--gray-700);
+        }
+
+        .feedback-answer-label,
+        .feedback-text-label {
+            display: block;
+            font-weight: 500;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            color: var(--gray-700);
+        }
+
+        .feedback-answer-content {
+            background-color: var(--gray-100);
+            padding: 12px;
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            white-space: pre-wrap;
+        }
+
+        .restart-btn {
+            margin-top: 32px;
+            width: 100%;
+            background-color: white;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            justify-content: center;
+        }
+
+        .restart-btn:hover {
+            background-color: var(--gray-100);
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-code"></i> Frontend Skills Interview</h1>
+            <p>Answer each question to the best of your ability. Your responses will be evaluated using AI analysis.</p>
+        </div>
+        
+        <div class="main-content">
+            <div id="error" class="error"></div>
+            
+            <div id="interview-container">
+                <div class="progress-bar">
+                    <div id="progress-inner" class="progress-bar-inner"></div>
+                </div>
+                <div class="progress-text">
+                    <span>Question <span id="current-question">1</span> of <span id="total-questions">0</span></span>
+                    <span id="time-remaining"></span>
+                </div>
+                
+                <div class="question-container">
+                    <div id="question" class="question"></div>
+                    <textarea id="answer" placeholder="Type your answer here... Be specific and provide examples where appropriate."></textarea>
+                    <div class="button-container">
+                        <button id="next-btn"><span>Next Question</span> <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+                
+                <div id="loading" class="loading">
+                    <div class="spinner"></div>
+                    <p>Evaluating your response...</p>
+                </div>
+            </div>
+            
+            <div id="result-container" class="result-container">
+                <div class="result-header">
+                    <h2>Frontend Skills Assessment</h2>
+                </div>
+                
+                <div class="score-card">
+                    <div id="total-score" class="score-value">0%</div>
+                    <div class="score-label">Overall Score</div>
+                </div>
+                
+                <div id="feedback-container" class="feedback-list"></div>
+                
+                <button id="restart-btn" class="restart-btn">
+                    <i class="fas fa-redo"></i> Start New Interview
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const questionElement = document.getElementById('question');
+            const answerElement = document.getElementById('answer');
+            const nextBtn = document.getElementById('next-btn');
+            const restartBtn = document.getElementById('restart-btn');
+            const currentQuestionElement = document.getElementById('current-question');
+            const totalQuestionsElement = document.getElementById('total-questions');
+            const interviewContainer = document.getElementById('interview-container');
+            const resultContainer = document.getElementById('result-container');
+            const feedbackContainer = document.getElementById('feedback-container');
+            const totalScoreElement = document.getElementById('total-score');
+            const loadingElement = document.getElementById('loading');
+            const errorElement = document.getElementById('error');
+            const progressInner = document.getElementById('progress-inner');
+            
+            let questions = [];
+            let currentQuestionIndex = 0;
+            let userAnswers = [];
+            
+            // Initialize the interview
+            fetchQuestions();
+            
+            // Fetch questions from backend
+            function fetchQuestions() {
+                showLoading(true);
+                
+                fetch('/api/questions')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to fetch questions');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        questions = data;
+                        totalQuestionsElement.textContent = questions.length;
+                        showCurrentQuestion();
+                        updateProgress();
+                        showLoading(false);
+                    })
+                    .catch(error => {
+                        showError('Failed to load interview questions. Please try again later.');
+                        console.error('Error:', error);
+                        showLoading(false);
+                    });
+            }
+            
+            // Display the current question
+            function showCurrentQuestion() {
+                if (currentQuestionIndex < questions.length) {
+                    questionElement.textContent = questions[currentQuestionIndex].question;
+                    currentQuestionElement.textContent = currentQuestionIndex + 1;
+                    answerElement.value = '';
+                    
+                    // Focus on the textarea
+                    setTimeout(() => {
+                        answerElement.focus();
+                    }, 100);
+                }
+            }
+            
+            // Update progress bar
+            function updateProgress() {
+                const progress = ((currentQuestionIndex) / questions.length) * 100;
+                progressInner.style.width = `${progress}%`;
+            }
+            
+            // Submit the current answer and proceed to the next question
+            function submitAnswer() {
+                const answer = answerElement.value.trim();
+                
+                if (answer === '') {
+                    showError('Please provide an answer before proceeding.');
+                    return;
+                }
+                
+                showError(''); // Clear any previous errors
+                showLoading(true);
+                
+                // Store user's answer
+                userAnswers.push({
+                    question_id: questions[currentQuestionIndex].id,
+                    answer: answer
+                });
+                
+                currentQuestionIndex++;
+                updateProgress();
+                
+                // Check if all questions have been answered
+                if (currentQuestionIndex >= questions.length) {
+                    submitInterview();
+                } else {
+                    showCurrentQuestion();
+                    showLoading(false);
+                }
+            }
+            
+            // Submit the entire interview for scoring
+            function submitInterview() {
+                fetch('/api/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        answers: userAnswers
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to submit interview');
+                    }
+                    return response.json();
+                })
+                .then(result => {
+                    displayResults(result);
+                    showLoading(false);
+                })
+                .catch(error => {
+                    showError('Failed to submit interview. Please try again later.');
+                    console.error('Error:', error);
+                    showLoading(false);
+                    currentQuestionIndex--; // Go back to last question
+                    showCurrentQuestion();
+                });
+            }
+            
+            // Display the interview results
+            function displayResults(result) {
+                // Clear previous results
+                feedbackContainer.innerHTML = '';
+                
+                // Display total score
+                totalScoreElement.textContent = `${result.total_score}%`;
+                
+                // Display feedback for each question
+                result.feedback.forEach(item => {
+                    // Determine score class
+                    let scoreClass = 'score-low';
+                    if (item.score >= 80) {
+                        scoreClass = 'score-high';
+                    } else if (item.score >= 50) {
+                        scoreClass = 'score-medium';
+                    }
+                    
+                    const feedbackElement = document.createElement('div');
+                    feedbackElement.className = 'feedback-item';
+                    
+                    feedbackElement.innerHTML = `
+                        <div class="feedback-header">
+                            <div class="feedback-title">
+                                <i class="fas fa-question-circle"></i>
+                                Question ${item.question_number}
+                            </div>
+                            <div class="feedback-score ${scoreClass}">
+                                ${item.score}%
+                            </div>
+                        </div>
+                        <div class="feedback-content">
+                            <div class="feedback-question">${item.question}</div>
+                            <div class="feedback-answer">
+                                <span class="feedback-answer-label">Your Answer:</span>
+                                <div class="feedback-answer-content">${item.user_answer}</div>
+                            </div>
+                            <div class="feedback-text">
+                                <span class="feedback-text-label">Feedback:</span>
+                                ${item.feedback}
+                            </div>
+                        </div>
+                    `;
+                    
+                    feedbackContainer.appendChild(feedbackElement);
+                });
+                
+                // Show results container, hide interview container
+                interviewContainer.style.display = 'none';
+                resultContainer.style.display = 'block';
+            }
+            
+            // Restart the interview
+            function restartInterview() {
+                // Reset the interview state
+                currentQuestionIndex = 0;
+                userAnswers = [];
+                
+                // Show interview container, hide results container
+                interviewContainer.style.display = 'block';
+                resultContainer.style.display = 'none';
+                
+                // Update progress bar
+                updateProgress();
+                
+                // Show the first question
+                showCurrentQuestion();
+            }
+            
+            // Show/hide loading spinner
+            function showLoading(show) {
+                loadingElement.style.display = show ? 'block' : 'none';
+                nextBtn.disabled = show;
+            }
+            
+            // Show error message
+            function showError(message) {
+                if (message) {
+                    errorElement.textContent = message;
+                    errorElement.style.display = 'block';
+                } else {
+                    errorElement.style.display = 'none';
+                }
+            }
+            
+            // Event listeners
+            nextBtn.addEventListener('click', submitAnswer);
+            restartBtn.addEventListener('click', restartInterview);
+            
+            // Allow pressing Enter in the textarea to submit
+            answerElement.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && e.ctrlKey) {
+                    submitAnswer();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
