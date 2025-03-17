@@ -3,3 +3,4 @@ requests
 werkzeug
 python-dotenv
 elevenlabs
+openai

@@ -5,8 +5,8 @@ import requests
 from dotenv import load_dotenv
 import logging
 from werkzeug.exceptions import HTTPException
-from io import BytesIO
-from elevenlabs.client import ElevenLabs
+import openai
+import base64
 
 # Load environment variables
 load_dotenv()
@@ -24,9 +24,9 @@ QUESTIONS_FILE = 'questions.json'
 GROQ_API_KEY = os.getenv('GROQ_API_KEY')
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 
-# ElevenLabs API key
-ELEVENLABS_API_KEY = os.getenv('ELEVENLABS_API_KEY')
-elevenlabs_client = ElevenLabs(api_key=ELEVENLABS_API_KEY) if ELEVENLABS_API_KEY else None
+# OpenAI API key
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+openai.api_key = OPENAI_API_KEY
 
 # Load questions from JSON file
 def load_questions():
@@ -44,7 +44,7 @@ def load_questions():
 # Route to serve the main HTML page
 @app.route('/')
 def index():
-     return render_template('index.html')
+    return render_template('index.html')
 
 # API route to get questions
 @app.route('/api/questions', methods=['GET'])
@@ -240,20 +240,22 @@ def text_to_speech():
     if not text:
         return jsonify({"error": "No text provided"}), 400
     
-    if not elevenlabs_client:
-        return jsonify({"error": "ElevenLabs API key not configured"}), 500
+    if not OPENAI_API_KEY:
+        return jsonify({"error": "OpenAI API key not configured"}), 500
     
     try:
-        # Use ElevenLabs to convert text to speech
-        audio = elevenlabs_client.text_to_speech.convert(
-            text=text,
-            voice_id="JBFqnCBsd6RMkjVDRZzb",  # Default voice ID
-            model_id="eleven_multilingual_v2",
-            output_format="mp3_44100_128",
+        # Use OpenAI to convert text to speech
+        response = openai.audio.speech.create(
+            model="tts-1",
+            voice="alloy",
+            input=text
         )
         
+        # Get the audio content
+        audio_data = response.content
+        
         # Return audio file as response
-        return Response(audio, mimetype='audio/mpeg')
+        return Response(audio_data, mimetype='audio/mpeg')
     
     except Exception as e:
         logger.error(f"Error in text-to-speech conversion: {str(e)}")
@@ -267,23 +269,33 @@ def speech_to_text():
     
     audio_file = request.files['audio']
     
-    if not elevenlabs_client:
-        return jsonify({"error": "ElevenLabs API key not configured"}), 500
+    if not OPENAI_API_KEY:
+        return jsonify({"error": "OpenAI API key not configured"}), 500
     
     try:
-        # Convert audio to bytes for ElevenLabs
-        audio_data = BytesIO(audio_file.read())
+        # Save audio to a temporary file
+        temp_filename = "temp_audio.wav"
+        audio_file.save(temp_filename)
         
-        # Use ElevenLabs to convert speech to text
-        transcription = elevenlabs_client.speech_to_text.convert(
-            file=audio_data,
-            model_id="scribe_v1",
-        )
+        # Open the file for OpenAI
+        with open(temp_filename, "rb") as audio_file:
+            # Use OpenAI to convert speech to text
+            transcript = openai.audio.transcriptions.create(
+                model="whisper-1", 
+                file=audio_file
+            )
         
-        return jsonify({"transcription": transcription})
+        # Clean up the temporary file
+        if os.path.exists(temp_filename):
+            os.remove(temp_filename)
+        
+        return jsonify({"transcription": transcript.text})
     
     except Exception as e:
         logger.error(f"Error in speech-to-text conversion: {str(e)}")
+        # Clean up the temporary file in case of error
+        if os.path.exists(temp_filename):
+            os.remove(temp_filename)
         return jsonify({"error": "Failed to convert speech to text"}), 500
 
 # Error handling
