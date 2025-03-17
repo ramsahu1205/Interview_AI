@@ -1,10 +1,12 @@
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, request, send_from_directory, Response
 import json
 import os
 import requests
+from dotenv import load_dotenv
 import logging
 from werkzeug.exceptions import HTTPException
-from dotenv import load_dotenv
+from io import BytesIO
+from elevenlabs.client import ElevenLabs
 
 # Load environment variables
 load_dotenv()
@@ -22,6 +24,10 @@ QUESTIONS_FILE = 'questions.json'
 GROQ_API_KEY = os.getenv('GROQ_API_KEY')
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 
+# ElevenLabs API key
+ELEVENLABS_API_KEY = os.getenv('ELEVENLABS_API_KEY')
+elevenlabs_client = ElevenLabs(api_key=ELEVENLABS_API_KEY) if ELEVENLABS_API_KEY else None
+
 # Load questions from JSON file
 def load_questions():
     try:
@@ -38,8 +44,7 @@ def load_questions():
 # Route to serve the main HTML page
 @app.route('/')
 def index():
-
-    return render_template('index.html')
+    return send_from_directory('.', 'index.html')
 
 # API route to get questions
 @app.route('/api/questions', methods=['GET'])
@@ -226,6 +231,61 @@ def submit_interview():
         "feedback": feedback_items
     })
 
+# Route for text-to-speech conversion
+@app.route('/api/text-to-speech', methods=['POST'])
+def text_to_speech():
+    data = request.json
+    text = data.get('text', '')
+    
+    if not text:
+        return jsonify({"error": "No text provided"}), 400
+    
+    if not elevenlabs_client:
+        return jsonify({"error": "ElevenLabs API key not configured"}), 500
+    
+    try:
+        # Use ElevenLabs to convert text to speech
+        audio = elevenlabs_client.text_to_speech.convert(
+            text=text,
+            voice_id="JBFqnCBsd6RMkjVDRZzb",  # Default voice ID
+            model_id="eleven_multilingual_v2",
+            output_format="mp3_44100_128",
+        )
+        
+        # Return audio file as response
+        return Response(audio, mimetype='audio/mpeg')
+    
+    except Exception as e:
+        logger.error(f"Error in text-to-speech conversion: {str(e)}")
+        return jsonify({"error": "Failed to convert text to speech"}), 500
+
+# Route for speech-to-text conversion
+@app.route('/api/speech-to-text', methods=['POST'])
+def speech_to_text():
+    if 'audio' not in request.files:
+        return jsonify({"error": "No audio file provided"}), 400
+    
+    audio_file = request.files['audio']
+    
+    if not elevenlabs_client:
+        return jsonify({"error": "ElevenLabs API key not configured"}), 500
+    
+    try:
+        # Convert audio to bytes for ElevenLabs
+        audio_data = BytesIO(audio_file.read())
+        
+        # Use ElevenLabs to convert speech to text
+        transcription = elevenlabs_client.speech_to_text.convert(
+            file=audio_data,
+            model_id="scribe_v1",
+        )
+        
+        return jsonify({"transcription": transcription})
+    
+    except Exception as e:
+        logger.error(f"Error in speech-to-text conversion: {str(e)}")
+        return jsonify({"error": "Failed to convert speech to text"}), 500
+
 # Error handling
 @app.errorhandler(Exception)
 def handle_exception(e):
@@ -237,4 +297,4 @@ def handle_exception(e):
     return jsonify({"error": "An unexpected error occurred"}), 500
 
 if __name__ == '__main__':
-    app.run(debug=False, host='0.0.0.0', port=5000)
+    app.run(debug=True)
