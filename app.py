@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, send_from_directory, Response
+from flask import Flask, jsonify, request, render_template, Response
 import json
 import os
 import requests
@@ -43,8 +43,9 @@ def load_questions():
 
 # Route to serve the main HTML page
 @app.route('/')
-def index():
-    return send_from_directory('.', 'index.html')
+ def index():
+ 
+     return render_template('index.html')
 
 # API route to get questions
 @app.route('/api/questions', methods=['GET'])
