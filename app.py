@@ -43,7 +43,7 @@ def load_questions():
 
 # Route to serve the main HTML page
 @app.route('/')
- def index():
+def index():
      return render_template('index.html')
 
 # API route to get questions
