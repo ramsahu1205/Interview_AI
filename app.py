@@ -5,6 +5,8 @@ import requests
 from dotenv import load_dotenv
 import logging
 from werkzeug.exceptions import HTTPException
+import openai
+import base64
 import tempfile
 
 # Google Cloud imports
@@ -27,6 +29,9 @@ QUESTIONS_FILE = 'questions.json'
 GROQ_API_KEY = os.getenv('GROQ_API_KEY')
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 
+# OpenAI API key
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+openai.api_key = OPENAI_API_KEY
 # Google Cloud clients
 try:
     tts_client = texttospeech.TextToSpeechClient()
@@ -52,6 +57,7 @@ def load_questions():
 # Route to serve the main HTML page
 @app.route('/')
 def index():
+    return render_template('index.html')
     return render_template('index.html')
 
 # API route to get questions
@@ -248,10 +254,21 @@ def text_to_speech():
     if not text:
         return jsonify({"error": "No text provided"}), 400
     
+    if not OPENAI_API_KEY:
+        return jsonify({"error": "OpenAI API key not configured"}), 500
     if not GOOGLE_CLOUD_ENABLED:
         return jsonify({"error": "Google Cloud services not configured properly"}), 500
     
     try:
+        # Use OpenAI to convert text to speech
+        response = openai.audio.speech.create(
+            model="tts-1",
+            voice="alloy",
+            input=text
+        )
+        
+        # Get the audio content
+        audio_data = response.content
         # Set the text input to be synthesized
         synthesis_input = texttospeech.SynthesisInput(text=text)
         
@@ -277,6 +294,7 @@ def text_to_speech():
         )
         
         # Return audio file as response
+        return Response(audio_data, mimetype='audio/mpeg')
         return Response(response.audio_content, mimetype='audio/mpeg')
     
     except Exception as e:
@@ -291,10 +309,27 @@ def speech_to_text():
     
     audio_file = request.files['audio']
     
+    if not OPENAI_API_KEY:
+        return jsonify({"error": "OpenAI API key not configured"}), 500
     if not GOOGLE_CLOUD_ENABLED:
         return jsonify({"error": "Google Cloud services not configured properly"}), 500
     
     try:
+        # Save audio to a temporary file
+        temp_filename = "temp_audio.wav"
+        audio_file.save(temp_filename)
+        
+        # Open the file for OpenAI
+        with open(temp_filename, "rb") as audio_file:
+            # Use OpenAI to convert speech to text
+            transcript = openai.audio.transcriptions.create(
+                model="whisper-1", 
+                file=audio_file
+            )
+        
+        # Clean up the temporary file
+        if os.path.exists(temp_filename):
+            os.remove(temp_filename)
         # Save the audio to a temporary file
         with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as temp_audio:
             audio_file.save(temp_audio.name)
@@ -324,10 +359,14 @@ def speech_to_text():
         # Clean up the temporary file
         os.unlink(temp_filename)
         
-        return jsonify({"transcription": transcription})
+        return jsonify({"transcription": transcript.text})
     
     except Exception as e:
         logger.error(f"Error in speech-to-text conversion: {str(e)}")
+        # Clean up the temporary file in case of error
+        if os.path.exists(temp_filename):
+            os.remove(temp_filename)
+        return jsonify({"error": "Failed to convert speech to text"}), 500
         
         # Clean up the temporary file in case of error
         if 'temp_filename' in locals() and os.path.exists(temp_filename):
