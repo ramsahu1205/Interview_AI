@@ -3,10 +3,7 @@ requests
 werkzeug
 python-dotenv
 elevenlabs
-<<<<<<< HEAD
 openai
 google-cloud-texttospeech
 google-cloud-speech
-=======
-openai
->>>>>>> a985eb6 (Used OPENAI)
+

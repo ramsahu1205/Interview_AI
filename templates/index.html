@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -205,7 +206,9 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .loading p {
@@ -231,8 +234,13 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         .result-header {
@@ -373,7 +381,7 @@
             background-color: var(--gray-100);
             transform: translateY(-1px);
         }
-        
+
         /* Audio controls */
         .audio-controls {
             display: flex;
@@ -381,7 +389,7 @@
             gap: 12px;
             margin-bottom: 20px;
         }
-        
+
         .audio-btn {
             background-color: white;
             color: var(--primary);
@@ -395,27 +403,27 @@
             cursor: pointer;
             transition: var(--transition);
         }
-        
+
         .audio-btn:hover {
             background-color: var(--gray-100);
             transform: translateY(-1px);
         }
-        
+
         .audio-btn:disabled {
             color: var(--gray-400);
             border-color: var(--gray-300);
             cursor: not-allowed;
         }
-        
+
         .audio-btn i {
             font-size: 1.25rem;
         }
-        
+
         .audio-status {
             font-size: 0.9rem;
             color: var(--gray-600);
         }
-        
+
         .visualizer {
             flex-grow: 1;
             height: 48px;
@@ -424,7 +432,7 @@
             position: relative;
             overflow: hidden;
         }
-        
+
         .visualizer-bars {
             display: flex;
             align-items: center;
@@ -432,14 +440,14 @@
             height: 100%;
             gap: 3px;
         }
-        
+
         .visualizer-bar {
             width: 3px;
             background-color: var(--primary);
             border-radius: 1px;
             transition: height 0.1s ease;
         }
-        
+
         .switch-container {
             display: flex;
             align-items: center;
@@ -447,25 +455,25 @@
             gap: 8px;
             justify-content: center;
         }
-        
+
         .switch-label {
             font-size: 0.9rem;
             color: var(--gray-700);
         }
-        
+
         .switch {
             position: relative;
             display: inline-block;
             width: 42px;
             height: 24px;
         }
-        
+
         .switch input {
             opacity: 0;
             width: 0;
             height: 0;
         }
-        
+
         .slider {
             position: absolute;
             cursor: pointer;
@@ -477,7 +485,7 @@
             transition: .4s;
             border-radius: 24px;
         }
-        
+
         .slider:before {
             position: absolute;
             content: "";
@@ -489,38 +497,35 @@
             transition: .4s;
             border-radius: 50%;
         }
-        
-        input:checked + .slider {
+
+        input:checked+.slider {
             background-color: var(--primary);
         }
-        
-        input:checked + .slider:before {
+
+        input:checked+.slider:before {
             transform: translateX(18px);
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
             <h1><i class="fas fa-code"></i> Frontend Skills Interview</h1>
             <p>Answer each question to the best of your ability. Your responses will be evaluated using AI analysis.</p>
-            
+
             <div class="switch-container">
-<<<<<<< HEAD
-                <span class="switch-label">Enable Google Voice</span>
-=======
                 <span class="switch-label">Enable OpenAI Voice</span>
->>>>>>> a985eb6 (Used OPENAI)
                 <label class="switch">
                     <input type="checkbox" id="audio-toggle">
                     <span class="slider"></span>
                 </label>
             </div>
         </div>
-        
+
         <div class="main-content">
             <div id="error" class="error"></div>
-            
+
             <div id="interview-container">
                 <div class="progress-bar">
                     <div id="progress-inner" class="progress-bar-inner"></div>
@@ -529,13 +534,13 @@
                     <span>Question <span id="current-question">1</span> of <span id="total-questions">0</span></span>
                     <span id="time-remaining"></span>
                 </div>
-                
+
                 <div class="question-container">
                     <div id="question" class="question"></div>
                     <button id="play-question" class="audio-btn" title="Play question">
                         <i class="fas fa-volume-up"></i>
                     </button>
-                    
+
                     <div class="audio-controls">
                         <button id="record-btn" class="audio-btn" title="Record your answer">
                             <i class="fas fa-microphone"></i>
@@ -545,31 +550,32 @@
                         </div>
                         <span id="audio-status" class="audio-status">Click microphone to start recording</span>
                     </div>
-                    
-                    <textarea id="answer" placeholder="Type your answer here... Be specific and provide examples where appropriate. Or use the microphone button to record your answer."></textarea>
+
+                    <textarea id="answer"
+                        placeholder="Type your answer here... Be specific and provide examples where appropriate. Or use the microphone button to record your answer."></textarea>
                     <div class="button-container">
                         <button id="next-btn"><span>Next Question</span> <i class="fas fa-arrow-right"></i></button>
                     </div>
                 </div>
-                
+
                 <div id="loading" class="loading">
                     <div class="spinner"></div>
                     <p>Evaluating your response...</p>
                 </div>
             </div>
-            
+
             <div id="result-container" class="result-container">
                 <div class="result-header">
                     <h2>Frontend Skills Assessment</h2>
                 </div>
-                
+
                 <div class="score-card">
                     <div id="total-score" class="score-value">0%</div>
                     <div class="score-label">Overall Score</div>
                 </div>
-                
+
                 <div id="feedback-container" class="feedback-list"></div>
-                
+
                 <button id="restart-btn" class="restart-btn">
                     <i class="fas fa-redo"></i> Start New Interview
                 </button>
@@ -578,7 +584,7 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const questionElement = document.getElementById('question');
             const answerElement = document.getElementById('answer');
             const nextBtn = document.getElementById('next-btn');
@@ -592,18 +598,18 @@
             const loadingElement = document.getElementById('loading');
             const errorElement = document.getElementById('error');
             const progressInner = document.getElementById('progress-inner');
-            
+
             // Audio elements
             const audioToggle = document.getElementById('audio-toggle');
             const playQuestionBtn = document.getElementById('play-question');
             const recordBtn = document.getElementById('record-btn');
             const audioStatus = document.getElementById('audio-status');
             const visualizerBars = document.getElementById('visualizer-bars');
-            
+
             let questions = [];
             let currentQuestionIndex = 0;
             let userAnswers = [];
-            
+
             // Audio variables
             let isAudioEnabled = false;
             let isRecording = false;
@@ -613,7 +619,7 @@
             let analyser = null;
             let microphone = null;
             let questionAudio = new Audio();
-            
+
             // Create visualizer bars
             for (let i = 0; i < 20; i++) {
                 const bar = document.createElement('div');
@@ -621,13 +627,13 @@
                 bar.style.height = '3px';
                 visualizerBars.appendChild(bar);
             }
-            
+
             // Audio toggle event
-            audioToggle.addEventListener('change', function() {
+            audioToggle.addEventListener('change', function () {
                 isAudioEnabled = audioToggle.checked;
                 playQuestionBtn.style.display = isAudioEnabled ? 'block' : 'none';
                 document.querySelector('.audio-controls').style.display = isAudioEnabled ? 'flex' : 'none';
-                
+
                 if (isAudioEnabled) {
                     // Setup audio context when enabled
                     setupAudioContext();
@@ -638,18 +644,18 @@
                     }
                 }
             });
-            
+
             // Initially hide audio controls
             playQuestionBtn.style.display = 'none';
             document.querySelector('.audio-controls').style.display = 'none';
-            
+
             // Initialize the interview
             fetchQuestions();
-            
+
             // Fetch questions from backend
             function fetchQuestions() {
                 showLoading(true);
-                
+
                 fetch('/api/questions')
                     .then(response => {
                         if (!response.ok) {
@@ -670,48 +676,48 @@
                         showLoading(false);
                     });
             }
-            
+
             // Display the current question
             function showCurrentQuestion() {
                 if (currentQuestionIndex < questions.length) {
                     questionElement.textContent = questions[currentQuestionIndex].question;
                     currentQuestionElement.textContent = currentQuestionIndex + 1;
                     answerElement.value = '';
-                    
+
                     // Focus on the textarea
                     setTimeout(() => {
                         answerElement.focus();
                     }, 100);
                 }
             }
-            
+
             // Update progress bar
             function updateProgress() {
                 const progress = ((currentQuestionIndex) / questions.length) * 100;
                 progressInner.style.width = `${progress}%`;
             }
-            
+
             // Submit the current answer and proceed to the next question
             function submitAnswer() {
                 const answer = answerElement.value.trim();
-                
+
                 if (answer === '') {
                     showError('Please provide an answer before proceeding.');
                     return;
                 }
-                
+
                 showError(''); // Clear any previous errors
                 showLoading(true);
-                
+
                 // Store user's answer
                 userAnswers.push({
                     question_id: questions[currentQuestionIndex].id,
                     answer: answer
                 });
-                
+
                 currentQuestionIndex++;
                 updateProgress();
-                
+
                 // Check if all questions have been answered
                 if (currentQuestionIndex >= questions.length) {
                     submitInterview();
@@ -720,7 +726,7 @@
                     showLoading(false);
                 }
             }
-            
+
             // Submit the entire interview for scoring
             function submitInterview() {
                 fetch('/api/submit', {
@@ -732,33 +738,33 @@
                         answers: userAnswers
                     })
                 })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to submit interview');
-                    }
-                    return response.json();
-                })
-                .then(result => {
-                    displayResults(result);
-                    showLoading(false);
-                })
-                .catch(error => {
-                    showError('Failed to submit interview. Please try again later.');
-                    console.error('Error:', error);
-                    showLoading(false);
-                    currentQuestionIndex--; // Go back to last question
-                    showCurrentQuestion();
-                });
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to submit interview');
+                        }
+                        return response.json();
+                    })
+                    .then(result => {
+                        displayResults(result);
+                        showLoading(false);
+                    })
+                    .catch(error => {
+                        showError('Failed to submit interview. Please try again later.');
+                        console.error('Error:', error);
+                        showLoading(false);
+                        currentQuestionIndex--; // Go back to last question
+                        showCurrentQuestion();
+                    });
             }
-            
+
             // Display the interview results
             function displayResults(result) {
                 // Clear previous results
                 feedbackContainer.innerHTML = '';
-                
+
                 // Display total score
                 totalScoreElement.textContent = `${result.total_score}%`;
-                
+
                 // Display feedback for each question
                 result.feedback.forEach(item => {
                     // Determine score class
@@ -768,10 +774,10 @@
                     } else if (item.score >= 50) {
                         scoreClass = 'score-medium';
                     }
-                    
+
                     const feedbackElement = document.createElement('div');
                     feedbackElement.className = 'feedback-item';
-                    
+
                     feedbackElement.innerHTML = `
                         <div class="feedback-header">
                             <div class="feedback-title">
@@ -794,38 +800,38 @@
                             </div>
                         </div>
                     `;
-                    
+
                     feedbackContainer.appendChild(feedbackElement);
                 });
-                
+
                 // Show results container, hide interview container
                 interviewContainer.style.display = 'none';
                 resultContainer.style.display = 'block';
             }
-            
+
             // Restart the interview
             function restartInterview() {
                 // Reset the interview state
                 currentQuestionIndex = 0;
                 userAnswers = [];
-                
+
                 // Show interview container, hide results container
                 interviewContainer.style.display = 'block';
                 resultContainer.style.display = 'none';
-                
+
                 // Update progress bar
                 updateProgress();
-                
+
                 // Show the first question
                 showCurrentQuestion();
             }
-            
+
             // Show/hide loading spinner
             function showLoading(show) {
                 loadingElement.style.display = show ? 'block' : 'none';
                 nextBtn.disabled = show;
             }
-            
+
             // Show error message
             function showError(message) {
                 if (message) {
@@ -835,7 +841,7 @@
                     errorElement.style.display = 'none';
                 }
             }
-            
+
             // Setup audio context
             function setupAudioContext() {
                 try {
@@ -850,15 +856,15 @@
                     isAudioEnabled = false;
                 }
             }
-            
+
             // Play question as audio
-            playQuestionBtn.addEventListener('click', function() {
+            playQuestionBtn.addEventListener('click', function () {
                 if (!isAudioEnabled) return;
-                
+
                 const questionText = questions[currentQuestionIndex].question;
                 playQuestionBtn.disabled = true;
                 playQuestionBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-                
+
                 fetch('/api/text-to-speech', {
                     method: 'POST',
                     headers: {
@@ -868,46 +874,46 @@
                         text: questionText
                     })
                 })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to convert text to speech');
-                    }
-                    return response.blob();
-                })
-                .then(blob => {
-                    const url = URL.createObjectURL(blob);
-                    questionAudio.src = url;
-                    questionAudio.play();
-                    
-                    // Reset button when audio finishes playing
-                    questionAudio.onended = function() {
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to convert text to speech');
+                        }
+                        return response.blob();
+                    })
+                    .then(blob => {
+                        const url = URL.createObjectURL(blob);
+                        questionAudio.src = url;
+                        questionAudio.play();
+
+                        // Reset button when audio finishes playing
+                        questionAudio.onended = function () {
+                            playQuestionBtn.disabled = false;
+                            playQuestionBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+                        };
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showError('Failed to play question audio.');
                         playQuestionBtn.disabled = false;
                         playQuestionBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
-                    };
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showError('Failed to play question audio.');
-                    playQuestionBtn.disabled = false;
-                    playQuestionBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
-                });
+                    });
             });
-            
+
             // Record button event
-            recordBtn.addEventListener('click', function() {
+            recordBtn.addEventListener('click', function () {
                 if (!isAudioEnabled) return;
-                
+
                 if (isRecording) {
                     stopRecording();
                 } else {
                     startRecording();
                 }
             });
-            
+
             // Start recording
             function startRecording() {
                 if (isRecording) return;
-                
+
                 navigator.mediaDevices.getUserMedia({ audio: true })
                     .then(stream => {
                         audioStatus.textContent = 'Recording... Click microphone to stop';
@@ -915,31 +921,31 @@
                         recordBtn.style.backgroundColor = 'rgba(239, 68, 68, 0.1)';
                         recordBtn.style.color = 'var(--danger)';
                         recordBtn.style.borderColor = 'var(--danger)';
-                        
+
                         // Connect microphone to analyser for visualization
                         if (audioContext && analyser) {
                             microphone = audioContext.createMediaStreamSource(stream);
                             microphone.connect(analyser);
                             visualize();
                         }
-                        
+
                         // Setup media recorder
                         mediaRecorder = new MediaRecorder(stream);
                         audioChunks = [];
-                        
+
                         mediaRecorder.ondataavailable = (event) => {
                             audioChunks.push(event.data);
                         };
-                        
+
                         mediaRecorder.onstop = () => {
                             const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
                             processAudioToText(audioBlob);
-                            
+
                             // Reset visualization
                             const bars = visualizerBars.querySelectorAll('.visualizer-bar');
                             bars.forEach(bar => bar.style.height = '3px');
                         };
-                        
+
                         mediaRecorder.start();
                         isRecording = true;
                     })
@@ -948,103 +954,103 @@
                         showError('Could not access microphone. Please check your browser permissions.');
                     });
             }
-            
+
             // Stop recording
             function stopRecording() {
                 if (!isRecording || !mediaRecorder) return;
-                
+
                 mediaRecorder.stop();
                 isRecording = false;
                 audioStatus.textContent = 'Processing audio...';
                 recordBtn.disabled = true;
-                
+
                 // Disconnect microphone
                 if (microphone) {
                     microphone.disconnect();
                     microphone = null;
                 }
             }
-            
+
             // Process recorded audio to text
             function processAudioToText(audioBlob) {
                 const formData = new FormData();
                 formData.append('audio', audioBlob);
-                
+
                 fetch('/api/speech-to-text', {
                     method: 'POST',
                     body: formData
                 })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to convert speech to text');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    const transcription = data.transcription;
-                    
-                    // Set the transcription as the answer
-                    answerElement.value = transcription;
-                    
-                    // Reset recording UI
-                    audioStatus.textContent = 'Click microphone to start recording';
-                    recordBtn.innerHTML = '<i class="fas fa-microphone"></i>';
-                    recordBtn.style.backgroundColor = '';
-                    recordBtn.style.color = '';
-                    recordBtn.style.borderColor = '';
-                    recordBtn.disabled = false;
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showError('Failed to convert speech to text. Please try again or type your answer.');
-                    
-                    // Reset recording UI
-                    audioStatus.textContent = 'Click microphone to start recording';
-                    recordBtn.innerHTML = '<i class="fas fa-microphone"></i>';
-                    recordBtn.style.backgroundColor = '';
-                    recordBtn.style.color = '';
-                    recordBtn.style.borderColor = '';
-                    recordBtn.disabled = false;
-                });
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to convert speech to text');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        const transcription = data.transcription;
+
+                        // Set the transcription as the answer
+                        answerElement.value = transcription;
+
+                        // Reset recording UI
+                        audioStatus.textContent = 'Click microphone to start recording';
+                        recordBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                        recordBtn.style.backgroundColor = '';
+                        recordBtn.style.color = '';
+                        recordBtn.style.borderColor = '';
+                        recordBtn.disabled = false;
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showError('Failed to convert speech to text. Please try again or type your answer.');
+
+                        // Reset recording UI
+                        audioStatus.textContent = 'Click microphone to start recording';
+                        recordBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                        recordBtn.style.backgroundColor = '';
+                        recordBtn.style.color = '';
+                        recordBtn.style.borderColor = '';
+                        recordBtn.disabled = false;
+                    });
             }
-            
+
             // Visualize audio
             function visualize() {
                 if (!analyser) return;
-                
+
                 const bufferLength = analyser.frequencyBinCount;
                 const dataArray = new Uint8Array(bufferLength);
                 const bars = visualizerBars.querySelectorAll('.visualizer-bar');
-                
+
                 function draw() {
                     if (!isRecording) return;
-                    
+
                     requestAnimationFrame(draw);
                     analyser.getByteFrequencyData(dataArray);
-                    
+
                     // Update each bar height based on frequency data
                     let barIndex = 0;
                     for (let i = 0; i < bufferLength; i += Math.floor(bufferLength / bars.length)) {
                         if (barIndex >= bars.length) break;
-                        
+
                         const value = dataArray[i];
                         const percent = value / 255;
                         const height = Math.max(3, percent * 40);
-                        
+
                         bars[barIndex].style.height = height + 'px';
                         barIndex++;
                     }
                 }
-                
+
                 draw();
             }
-            
+
             // Event listeners
             nextBtn.addEventListener('click', submitAnswer);
             restartBtn.addEventListener('click', restartInterview);
-            
+
             // Allow pressing Enter in the textarea to submit
-            answerElement.addEventListener('keydown', function(e) {
+            answerElement.addEventListener('keydown', function (e) {
                 if (e.key === 'Enter' && e.ctrlKey) {
                     submitAnswer();
                 }
@@ -1052,4 +1058,5 @@
         });
     </script>
 </body>
+
 </html>
