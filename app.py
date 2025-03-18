@@ -5,8 +5,11 @@ import requests
 from dotenv import load_dotenv
 import logging
 from werkzeug.exceptions import HTTPException
-import openai
-import base64
+import tempfile
+
+# Google Cloud imports
+from google.cloud import texttospeech
+from google.cloud import speech
 
 # Load environment variables
 load_dotenv()
@@ -24,9 +27,14 @@ QUESTIONS_FILE = 'questions.json'
 GROQ_API_KEY = os.getenv('GROQ_API_KEY')
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 
-# OpenAI API key
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-openai.api_key = OPENAI_API_KEY
+# Google Cloud clients
+try:
+    tts_client = texttospeech.TextToSpeechClient()
+    stt_client = speech.SpeechClient()
+    GOOGLE_CLOUD_ENABLED = True
+except Exception as e:
+    logger.error(f"Failed to initialize Google Cloud clients: {str(e)}")
+    GOOGLE_CLOUD_ENABLED = False
 
 # Load questions from JSON file
 def load_questions():
@@ -240,22 +248,36 @@ def text_to_speech():
     if not text:
         return jsonify({"error": "No text provided"}), 400
     
-    if not OPENAI_API_KEY:
-        return jsonify({"error": "OpenAI API key not configured"}), 500
+    if not GOOGLE_CLOUD_ENABLED:
+        return jsonify({"error": "Google Cloud services not configured properly"}), 500
     
     try:
-        # Use OpenAI to convert text to speech
-        response = openai.audio.speech.create(
-            model="tts-1",
-            voice="alloy",
-            input=text
+        # Set the text input to be synthesized
+        synthesis_input = texttospeech.SynthesisInput(text=text)
+        
+        # Build the voice request
+        voice = texttospeech.VoiceSelectionParams(
+            language_code="en-US",
+            name="en-US-Wavenet-D",
+            ssml_gender=texttospeech.SsmlVoiceGender.NEUTRAL
         )
         
-        # Get the audio content
-        audio_data = response.content
+        # Select the type of audio file you want returned
+        audio_config = texttospeech.AudioConfig(
+            audio_encoding=texttospeech.AudioEncoding.MP3,
+            speaking_rate=1.0,
+            pitch=0.0
+        )
+        
+        # Perform the text-to-speech request
+        response = tts_client.synthesize_speech(
+            input=synthesis_input, 
+            voice=voice, 
+            audio_config=audio_config
+        )
         
         # Return audio file as response
-        return Response(audio_data, mimetype='audio/mpeg')
+        return Response(response.audio_content, mimetype='audio/mpeg')
     
     except Exception as e:
         logger.error(f"Error in text-to-speech conversion: {str(e)}")
@@ -269,34 +291,49 @@ def speech_to_text():
     
     audio_file = request.files['audio']
     
-    if not OPENAI_API_KEY:
-        return jsonify({"error": "OpenAI API key not configured"}), 500
+    if not GOOGLE_CLOUD_ENABLED:
+        return jsonify({"error": "Google Cloud services not configured properly"}), 500
     
     try:
-        # Save audio to a temporary file
-        temp_filename = "temp_audio.wav"
-        audio_file.save(temp_filename)
+        # Save the audio to a temporary file
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as temp_audio:
+            audio_file.save(temp_audio.name)
+            temp_filename = temp_audio.name
         
-        # Open the file for OpenAI
-        with open(temp_filename, "rb") as audio_file:
-            # Use OpenAI to convert speech to text
-            transcript = openai.audio.transcriptions.create(
-                model="whisper-1", 
-                file=audio_file
-            )
+        # Read the audio file
+        with open(temp_filename, 'rb') as audio_file:
+            content = audio_file.read()
+        
+        # Create the audio configuration
+        audio = speech.RecognitionAudio(content=content)
+        config = speech.RecognitionConfig(
+            encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
+            sample_rate_hertz=16000,
+            language_code="en-US",
+            enable_automatic_punctuation=True
+        )
+        
+        # Perform the speech-to-text request
+        response = stt_client.recognize(config=config, audio=audio)
+        
+        # Process the response
+        transcription = ""
+        for result in response.results:
+            transcription += result.alternatives[0].transcript
         
         # Clean up the temporary file
-        if os.path.exists(temp_filename):
-            os.remove(temp_filename)
+        os.unlink(temp_filename)
         
-        return jsonify({"transcription": transcript.text})
+        return jsonify({"transcription": transcription})
     
     except Exception as e:
         logger.error(f"Error in speech-to-text conversion: {str(e)}")
+        
         # Clean up the temporary file in case of error
-        if os.path.exists(temp_filename):
-            os.remove(temp_filename)
-        return jsonify({"error": "Failed to convert speech to text"}), 500
+        if 'temp_filename' in locals() and os.path.exists(temp_filename):
+            os.unlink(temp_filename)
+            
+        return jsonify({"error": f"Failed to convert speech to text: {str(e)}"}), 500
 
 # Error handling
 @app.errorhandler(Exception)
