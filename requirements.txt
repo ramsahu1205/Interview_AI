@@ -4,3 +4,5 @@ werkzeug
 python-dotenv
 elevenlabs
 openai
+google-cloud-texttospeech
+google-cloud-speech
