@@ -150,4 +150,7 @@ if __name__ == '__main__':
     open(os.path.join('utils', '__init__.py'), 'a').close()
     open(os.path.join('services', '__init__.py'), 'a').close()
     
-    app.run(debug=True)
+    # Get port from environment variable for Render deployment
+    port = int(os.getenv('PORT', 5000))
+    # Run the app on host 0.0.0.0 to make it accessible externally
+    app.run(host='0.0.0.0', port=port)
