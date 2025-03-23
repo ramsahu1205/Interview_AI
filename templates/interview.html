@@ -1,0 +1,270 @@
+<html>
+    <head>
+          <title>AI Interview Assistant</title>
+          <link href="/static/css/styles.css" rel="stylesheet"/>
+          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+          <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        </head>
+    <body>
+        <div class="login-container">
+            <div id="robot-p" class="robot-main">  	
+                <div class="robot">
+                    <div class="neck"></div>
+                    <div class="arms">
+                        <div class="arm arm_left"></div>
+                        <div class="arm arm_right"></div>
+                    </div>
+                    <div class="torso"></div>
+                    <div class="head">
+                        <div class="eyes">
+                            <div class="eyeball eyeball_left"></div>
+                            <div class="eyeball eyeball_right"></div>
+                        </div>
+                        <div class="mouth">
+                            <div class="mouth-container">
+                                <div class="mouth-container-line"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Loading indicator overlay for the robot -->
+                <div id="robot-loading" class="robot-loading hide">
+                    <div class="spinner"></div>
+                    <div id="loading-text">Processing...</div>
+                </div>
+                
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" style="display:none">
+                    <defs>
+                        <!-- SVG filters unchanged -->
+                        <!-- Low -->
+                        <filter id="low-0">
+                            <feTurbulence id="turbulence"
+                                          baseFrequency="0.02"
+                                          numOctaves="3"
+                                          result="noise"
+                                          seed="0"/>
+                            <feDisplacementMap id="displacement"
+                                               in="SourceGraphic"
+                                               in2="noise"
+                                               scale="1" />
+                        </filter>
+                        <filter id="low-1">
+                            <feTurbulence id="turbulence"
+                                          baseFrequency="0.02"
+                                          numOctaves="3"
+                                          result="noise"
+                                          seed="30"/>
+                            <feDisplacementMap in="SourceGraphic"
+                                               in2="noise"
+                                               scale="1.5" />
+                        </filter>
+                        <filter id="low-2">
+                            <feTurbulence id="turbulence"
+                                          baseFrequency="0.02"
+                                          numOctaves="3"
+                                          result="noise"
+                                          seed="2"/>
+                            <feDisplacementMap in="SourceGraphic"
+                                               in2="noise"
+                                               scale="1" />
+                        </filter>
+                        <filter id="low-3">
+                            <feTurbulence id="turbulence"
+                                          baseFrequency="0.02"
+                                          numOctaves="3"
+                                          result="noise"
+                                          seed="30"/>
+                            <feDisplacementMap in="SourceGraphic"
+                                               in2="noise"
+                                               scale="1.5" />
+                        </filter>
+                        <filter id="low-4">
+                            <feTurbulence id="turbulence"
+                                          baseFrequency="0.1"
+                                          numOctaves="3"
+                                          result="noise"
+                                          seed="4"/>
+                            <feDisplacementMap in="SourceGraphic"
+                                               in2="noise"
+                                               scale="0.5" />
+                        </filter>
+                        <!-- Listening -->
+                        <filter id="listening-0">
+                            <feTurbulence id="turbulence"
+                                          baseFrequency="0.02"
+                                          numOctaves="3"
+                                          result="noise"
+                                          seed="0"/>
+                            <feDisplacementMap id="displacement"
+                                               in="SourceGraphic"
+                                               in2="noise"
+                                               scale="2" />
+                        </filter>
+                        <filter id="listening-1">
+                            <feTurbulence id="turbulence"
+                                          baseFrequency="0.02"
+                                          numOctaves="3"
+                                          result="noise"
+                                          seed="30"/>
+                            <feDisplacementMap in="SourceGraphic"
+                                               in2="noise"
+                                               scale="3" />
+                        </filter>
+                        <filter id="listening-2">
+                            <feTurbulence id="turbulence"
+                                          baseFrequency="0.02"
+                                          numOctaves="3"
+                                          result="noise"
+                                          seed="2"/>
+                            <feDisplacementMap in="SourceGraphic"
+                                               in2="noise"
+                                               scale="2" />
+                        </filter>
+                        <filter id="listening-3">
+                            <feTurbulence id="turbulence"
+                                          baseFrequency="0.02"
+                                          numOctaves="3"
+                                          result="noise"
+                                          seed="30"/>
+                            <feDisplacementMap in="SourceGraphic"
+                                               in2="noise"
+                                               scale="3" />
+                        </filter>
+                        <filter id="listening-4">
+                            <feTurbulence id="turbulence"
+                                          baseFrequency="0.1"
+                                          numOctaves="3"
+                                          result="noise"
+                                          seed="4"/>
+                            <feDisplacementMap in="SourceGraphic"
+                                               in2="noise"
+                                               scale="1" />
+                        </filter>
+                        <!-- Speaking -->
+                        <filter id="speaking-0">
+                            <feTurbulence id="turbulence"
+                                          baseFrequency="0.02"
+                                          numOctaves="3"
+                                          result="noise"
+                                          seed="0"/>
+                            <feDisplacementMap id="displacement"
+                                               in="SourceGraphic"
+                                               in2="noise"
+                                               scale="12" />
+                        </filter>
+                        <filter id="speaking-1">
+                            <feTurbulence id="turbulence"
+                                          baseFrequency="0.02"
+                                          numOctaves="3"
+                                          result="noise"
+                                          seed="30"/>
+                            <feDisplacementMap in="SourceGraphic"
+                                               in2="noise"
+                                               scale="13" />
+                        </filter>
+                        <filter id="speaking-2">
+                            <feTurbulence id="turbulence"
+                                          baseFrequency="0.02"
+                                          numOctaves="3"
+                                          result="noise"
+                                          seed="2"/>
+                            <feDisplacementMap in="SourceGraphic"
+                                               in2="noise"
+                                               scale="12" />
+                        </filter>
+                        <filter id="speaking-3">
+                            <feTurbulence id="turbulence"
+                                          baseFrequency="0.02"
+                                          numOctaves="3"
+                                          result="noise"
+                                          seed="30"/>
+                            <feDisplacementMap in="SourceGraphic"
+                                               in2="noise"
+                                               scale="13" />
+                        </filter>
+                        <filter id="speaking-4">
+                            <feTurbulence id="turbulence"
+                                          baseFrequency="0.1"
+                                          numOctaves="3"
+                                          result="noise"
+                                          seed="4"/>
+                            <feDisplacementMap in="SourceGraphic"
+                                               in2="noise"
+                                               scale="11" />
+                        </filter>
+                    </defs>
+                </svg>
+            
+            </div>
+            <div class="user-main">
+                <video class="user-video" id="vid"></video>
+                <div class="vid-tools">
+                    <div style="width: 14em;display: flex;justify-content: space-evenly;position: relative;">
+                        <span id="video-on" class="m-icon material-symbols-outlined hide">videocam</span>
+                        <span id="video-off" class="m-icon material-symbols-outlined">videocam_off</span>
+                        <span id="recording-on" class="m-icon material-symbols-outlined">radio_button_checked</span>
+                        <span id="recording-off" class="m-icon material-symbols-outlined hide">stop_circle</span>
+                    </div>
+                </div>
+            </div>
+            <div style="display: flex;justify-content: center;height: 100vh;width: 100%;">
+                <div style="display: flex;justify-content: center;flex-direction: column;">
+                    <img id="q-img" src="" class="hide" style="width: auto;object-fit: contain;"/>
+                    
+                    <!-- Progress indicator for transitions between questions -->
+                    <div id="interview-progress" class="interview-progress hide">
+                        <div class="progress-indicator">
+                            <div class="progress-bar">
+                                <div id="progress-fill" class="progress-fill"></div>
+                            </div>
+                            <div id="progress-message">Moving to next question...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Status messages overlay -->
+            <div id="status-message" class="status-message hide"></div>
+        </div>
+    </body>
+    <script src="/static/js/script.js"></script>
+    <script>
+        // Helper function to wait
+        function wait(timer) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                   resolve(true)
+                }, timer)
+            })     
+        }
+
+        // Function to load data from the API
+        function loadData() {
+            return new Promise((resolve, reject) => {
+                const myHeaders = new Headers();
+                myHeaders.append("Content-Type", "application/json");
+                const raw = JSON.stringify({
+                    "path": "/test_qna/11222332/pdf_new.pdf",
+                    "topic_id": "12233222"
+                });
+
+                const requestOptions = {
+                    method: "POST",
+                    headers: myHeaders,
+                    body: raw,
+                    redirect: "follow"
+                };
+
+                fetch("https://stem.varoshakart.in/extract-pdf/text-img", requestOptions)
+                    .then((response) => response.json())
+                    .then((result) => {
+                        resolve(result)
+                    })
+                    .catch((error) => {
+                        reject(error)
+                    });
+            });
+        }
+    </script>
+</html>

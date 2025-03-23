@@ -1,0 +1,312 @@
+:root {
+    --primary-color: #4361ee;
+    --secondary-color: #3f37c9;
+    --accent-color: #4cc9f0;
+    --text-color: #333;
+    --light-text: #666;
+    --background-color: #f9fafb;
+    --card-color: #fff;
+    --border-color: #e2e8f0;
+    --success-color: #10b981;
+    --error-color: #ef4444;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.app-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+header h1 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+header p {
+    color: var(--light-text);
+}
+
+main {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 2rem;
+}
+
+@media (max-width: 900px) {
+    main {
+        grid-template-columns: 1fr;
+    }
+}
+
+.interview-container {
+    background-color: var(--card-color);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.interview-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.interview-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.audio-controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.chat-container {
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-history {
+    flex: 1;
+    padding: 1.5rem;
+    overflow-y: auto;
+}
+
+.chat-message {
+    margin-bottom: 1.5rem;
+    display: flex;
+    gap: 0.75rem;
+}
+
+.chat-message.user {
+    flex-direction: row-reverse;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.avatar.user {
+    background-color: var(--secondary-color);
+}
+
+.message-content {
+    max-width: 70%;
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: #f3f4f6;
+    position: relative;
+}
+
+.chat-message.user .message-content {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.chat-input-container {
+    padding: 1rem;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: 0.5rem;
+}
+
+textarea {
+    flex: 1;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    resize: none;
+    font-size: 1rem;
+}
+
+.primary-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.primary-btn:hover {
+    background-color: var(--secondary-color);
+}
+
+.send-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.icon-btn {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.icon-btn.recording {
+    background-color: var(--error-color);
+    animation: pulse 1.5s infinite;
+}
+
+.toggle-btn {
+    background-color: #e2e8f0;
+    color: var(--light-text);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.toggle-btn.active {
+    background-color: var(--success-color);
+    color: white;
+}
+
+select {
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: white;
+    font-size: 0.9rem;
+}
+
+.info-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.interview-progress,
+.interview-tips {
+    background-color: var(--card-color);
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+}
+
+.progress-bar {
+    height: 0.5rem;
+    background-color: #e2e8f0;
+    border-radius: 0.25rem;
+    margin: 1rem 0;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    background-color: var(--success-color);
+    transition: width 0.3s ease;
+}
+
+.interview-tips ul {
+    margin-top: 1rem;
+    padding-left: 1.5rem;
+}
+
+.interview-tips li {
+    margin-bottom: 0.5rem;
+}
+
+footer {
+    margin-top: 2rem;
+    text-align: center;
+    color: var(--light-text);
+    font-size: 0.9rem;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* In styles.css */
+.score-display {
+    text-align: center;
+    padding: 2rem;
+    background-color: var(--card-color);
+    border-radius: 10px;
+    margin: 1rem 0;
+}
+
+.score-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: conic-gradient(var(--success-color) var(--score), #e2e8f0 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 1rem auto;
+    position: relative;
+}
+
+.score-circle::before {
+    content: '';
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    background-color: var(--card-color);
+    border-radius: 50%;
+}
+
+.score-circle span {
+    position: relative;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--text-color);
+}
