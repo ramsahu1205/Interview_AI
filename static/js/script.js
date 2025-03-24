@@ -150,7 +150,7 @@ async function initAudioRecording() {
 // Process the recorded audio via Whisper API
 async function processRecording(audioBlob) {
     try {
-        showRobotLoading("Transcribing your response...");
+        showRobotLoading("Processing your response...");
         
         const formData = new FormData();
         formData.append('audio', audioBlob, 'recording.wav');
@@ -178,26 +178,8 @@ async function processRecording(audioBlob) {
         }
         
         if (currentQuestion) {
-            showRobotLoading("Evaluating your response...");
-            
-            // Clear any existing auto-progress timer
-            if (autoProgressTimer) {
-                clearTimeout(autoProgressTimer);
-            }
-            
-            // Start automatic progression timer
-            autoProgressTimer = setTimeout(() => {
-                hideRobotLoading();
-                moveToNextQuestion();
-            }, AUTO_PROGRESS_TIMEOUT);
-            
-            await evaluateResponse(currentQuestion, userResponse, currentQuestionId);
-            
-            // Clear timer if evaluation finished before timeout
-            if (autoProgressTimer) {
-                clearTimeout(autoProgressTimer);
-                autoProgressTimer = null;
-            }
+            // Simply store the response without evaluation
+            await storeResponse(currentQuestion, userResponse, currentQuestionId);
             
             // Show transition to next question
             showProgressIndicator();
@@ -205,10 +187,9 @@ async function processRecording(audioBlob) {
             // Move to next question after a short delay
             setTimeout(() => {
                 moveToNextQuestion();
-            }, 3000);
-        } else {
-            hideRobotLoading();
+            }, 1500); // Shorter delay since we're skipping evaluation
         }
+        
     } catch (error) {
         console.error('Error processing recording:', error);
         hideRobotLoading();
@@ -380,10 +361,9 @@ function queueSpeech(text) {
 }
 
 // Evaluate user response using backend
-async function evaluateResponse(question, response, questionId) {
+async function storeResponse(question, response, questionId) {
     try {
-        // Send for evaluation
-        const result = await fetch('/api/evaluate', {
+        await fetch('/api/store-response', {  
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -395,24 +375,8 @@ async function evaluateResponse(question, response, questionId) {
                 response: response
             })
         });
-        
-        const evaluation = await result.json();
-        
-        if (evaluation.error) {
-            throw new Error(evaluation.error);
-        }
-        
-        // Prepare feedback text
-        const feedbackText = `Your score for this question is ${evaluation.score} out of 10. ${evaluation.feedback} Suggestion for improvement: ${evaluation.suggestion}`;
-        
-        // Queue feedback for speech
-        queueSpeech(feedbackText);
-        
-        return evaluation;
     } catch (error) {
-        console.error('Error evaluating response:', error);
-        showStatus('Error evaluating your response');
-        return null;
+        console.error('Error storing response:', error);
     }
 }
 

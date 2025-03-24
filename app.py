@@ -17,43 +17,6 @@ def index():
 def serve_static(path):
     return send_from_directory('static', path)
 
-@app.route('/api/evaluate', methods=['POST'])
-def evaluate():
-    """API endpoint for evaluating a user's interview response"""
-    try:
-        data = request.json
-        if not data:
-            return jsonify({'error': 'Invalid JSON data'}), 400
-            
-        session_id = data.get('sessionId', 'default')
-        question_id = data.get('questionId')
-        question = data.get('question', '')
-        response = data.get('response', '')
-        
-        if not question or not response:
-            return jsonify({'error': 'Question and response are required'}), 400
-        
-        # Store the question and response
-        if session_id not in interview_data:
-            interview_data[session_id] = {}
-        
-        interview_data[session_id][question_id] = {
-            'question': question,
-            'response': response
-        }
-        
-        # Evaluate the response
-        evaluation = evaluate_response(question, response)
-        
-        # Store the evaluation
-        interview_data[session_id][question_id]['evaluation'] = evaluation
-        
-        return jsonify(evaluation)
-    except Exception as e:
-        print(f"Error in evaluate: {str(e)}")
-        traceback.print_exc()
-        return jsonify({'error': 'Server error processing evaluation'}), 500
-
 @app.route('/api/speech-to-text', methods=['POST'])
 def handle_speech_to_text():
     """API endpoint for converting speech to text using Whisper API"""
@@ -138,6 +101,39 @@ def get_results(session_id):
         'questionCount': count,
         'results': results
     })
+
+@app.route('/api/store-response', methods=['POST'])
+def store_response():
+    """API endpoint for storing user responses without evaluation"""
+    try:
+        data = request.json
+        if not data:
+            return jsonify({'error': 'Invalid JSON data'}), 400
+            
+        session_id = data.get('sessionId', 'default')
+        question_id = data.get('questionId')
+        question = data.get('question', '')
+        response = data.get('response', '')
+        
+        if not question or not response:
+            return jsonify({'error': 'Question and response are required'}), 400
+        
+        # Store the question and response without evaluation
+        if session_id not in interview_data:
+            interview_data[session_id] = {}
+        
+        interview_data[session_id][question_id] = {
+            'question': question,
+            'response': response
+            # No evaluation stored
+        }
+        
+        return jsonify({'status': 'success'})
+        
+    except Exception as e:
+        print(f"Error in store_response: {str(e)}")
+        traceback.print_exc()
+        return jsonify({'error': 'Server error storing response'}), 500
 
 if __name__ == '__main__':
     # Make sure the utils directory exists
