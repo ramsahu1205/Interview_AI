@@ -1,31 +1,27 @@
 <html>
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
           <title>AI Interview Assistant</title>
           <link href="/static/css/styles.css" rel="stylesheet"/>
           <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+          <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.js"></script>
+          <script src="https://cdn.jsdelivr.net/npm/@ricky0123/vad-web@0.0.22/dist/bundle.min.js"></script>
+
           <meta http-equiv="X-UA-Compatible" content="ie=edge">
         </head>
     <body>
         <div class="login-container">
             <div id="robot-p" class="robot-main">  	
                 <div class="robot">
-                    <div class="neck"></div>
-                    <div class="arms">
-                        <div class="arm arm_left"></div>
-                        <div class="arm arm_right"></div>
-                    </div>
-                    <div class="torso"></div>
-                    <div class="head">
-                        <div class="eyes">
-                            <div class="eyeball eyeball_left"></div>
-                            <div class="eyeball eyeball_right"></div>
+                    <div class="circle">
+                        <p class="text">AS</p>
+                      </div>
+                    <!-- <div class="mouth">
+                        <div class="mouth-container">
+                            <div class="mouth-container-line"></div>
                         </div>
-                        <div class="mouth">
-                            <div class="mouth-container">
-                                <div class="mouth-container-line"></div>
-                            </div>
-                        </div>
-                    </div>
+                    </div> -->
                 </div>
                 
                 <!-- Loading indicator overlay for the robot -->
@@ -200,7 +196,7 @@
             <div class="user-main">
                 <video class="user-video" id="vid"></video>
                 <div class="vid-tools">
-                    <div style="width: 14em;display: flex;justify-content: space-evenly;position: relative;">
+                    <div style="width: 13em;display: flex;justify-content: space-evenly;position: relative;">
                         <span id="video-on" class="m-icon material-symbols-outlined hide">videocam</span>
                         <span id="video-off" class="m-icon material-symbols-outlined">videocam_off</span>
                         <span id="recording-on" class="m-icon material-symbols-outlined">radio_button_checked</span>
@@ -210,7 +206,7 @@
             </div>
             <div style="display: flex;justify-content: center;height: 100vh;width: 100%;">
                 <div style="display: flex;justify-content: center;flex-direction: column;">
-                    <img id="q-img" src="" class="hide" style="width: auto;object-fit: contain;"/>
+                    <img id="q-img" src="" class="hide" style="width: 100%;object-fit: contain;"/>
                     
                     <!-- Progress indicator for transitions between questions -->
                     <div id="interview-progress" class="interview-progress hide">

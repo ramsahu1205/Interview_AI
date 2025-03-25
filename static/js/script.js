@@ -284,7 +284,7 @@ async function getTextToSpeech(text) {
 async function speakText(text) {
     try {
         showRobotLoading("Generating speech...");
-        robotElement.classList.add('robot_speaking');
+        robotElement.classList.add('circle_wave');
         
         const audioData = await getTextToSpeech(text);
         
@@ -296,19 +296,19 @@ async function speakText(text) {
             
             return new Promise((resolve) => {
                 audio.onended = () => {
-                    robotElement.classList.remove('robot_speaking');
+                    robotElement.classList.remove('circle_wave');
                     resolve();
                 };
                 
                 audio.onerror = () => {
                     console.error('Error playing audio, using fallback');
-                    robotElement.classList.remove('robot_speaking');
+                    robotElement.classList.remove('circle_wave');
                     resolve();
                 };
                 
                 audio.play().catch(e => {
                     console.error('Error playing audio:', e);
-                    robotElement.classList.remove('robot_speaking');
+                    robotElement.classList.remove('circle_wave');
                     resolve();
                 });
             });
@@ -319,12 +319,12 @@ async function speakText(text) {
             return new Promise((resolve) => {
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.onend = () => {
-                    robotElement.classList.remove('robot_speaking');
+                    robotElement.classList.remove('circle_wave');
                     resolve();
                 };
                 
                 utterance.onerror = () => {
-                    robotElement.classList.remove('robot_speaking');
+                    robotElement.classList.remove('circle_wave');
                     resolve();
                 };
                 
@@ -334,7 +334,7 @@ async function speakText(text) {
     } catch (error) {
         console.error('Error in speech process:', error);
         hideRobotLoading();
-        robotElement.classList.remove('robot_speaking');
+        robotElement.classList.remove('circle_wave');
         showStatus('Error generating speech');
     }
 }
